@@ -450,6 +450,80 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 /* ─────────────────────────────────────────
+   19b. DRAGGABLE GALLERY
+───────────────────────────────────────── */
+(function initDragGallery() {
+  const track = document.getElementById('gallery-track');
+  if (!track) return;
+
+  let isDown = false, startX = 0, scrollLeft = 0, velX = 0, lastX = 0, raf;
+
+  track.addEventListener('mousedown', e => {
+    isDown   = true;
+    startX   = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+    lastX    = e.pageX;
+    velX     = 0;
+    track.classList.add('is-dragging');
+    cancelAnimationFrame(raf);
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x   = e.pageX - track.offsetLeft;
+    const walk = x - startX;
+    velX = e.pageX - lastX;
+    lastX = e.pageX;
+    track.scrollLeft = scrollLeft - walk;
+  });
+
+  const stopDrag = () => {
+    if (!isDown) return;
+    isDown = false;
+    track.classList.remove('is-dragging');
+    // Momentum
+    const momentum = () => {
+      velX *= 0.92;
+      track.scrollLeft -= velX;
+      if (Math.abs(velX) > 0.5) raf = requestAnimationFrame(momentum);
+    };
+    raf = requestAnimationFrame(momentum);
+  };
+
+  document.addEventListener('mouseup',    stopDrag);
+  document.addEventListener('mouseleave', stopDrag);
+
+  // Touch support
+  track.addEventListener('touchstart', e => {
+    startX = e.touches[0].pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+  }, { passive: true });
+  track.addEventListener('touchmove', e => {
+    const x = e.touches[0].pageX - track.offsetLeft;
+    track.scrollLeft = scrollLeft - (x - startX);
+  }, { passive: true });
+})();
+
+/* ─────────────────────────────────────────
+   19c. GALLERY CARD TILT
+───────────────────────────────────────── */
+(function initCardTilt() {
+  if (window.innerWidth <= 700) return;
+  document.querySelectorAll('.g-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const x  = (e.clientX - r.left) / r.width  - 0.5;
+      const y  = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `perspective(800px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+})();
+
+/* ─────────────────────────────────────────
    20. PHOTO TILT — story section
 ───────────────────────────────────────── */
 (function initPhotoTilt() {

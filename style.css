@@ -866,6 +866,160 @@ body.cu-click .c-ring { width: 22px; height: 22px; }
 }
 
 /* ================================================
+   HERO IMAGE STRIP
+   ================================================ */
+.hero-strip {
+  display: flex;
+  height: 260px;
+  overflow: hidden;
+  background: var(--ink);
+}
+.hero-strip img {
+  flex: 0 0 auto;
+  width: 20%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.88) saturate(1.1);
+  transition: flex 0.65s var(--ease), filter 0.4s, transform 0.4s var(--ease);
+  transform-origin: center bottom;
+}
+.hero-strip img:hover {
+  flex: 0 0 30%;
+  filter: brightness(1) saturate(1.25);
+  transform: scale(1.03);
+}
+@media (max-width: 700px) {
+  .hero-strip { height: 180px; }
+  .hero-strip img { width: 33.33%; }
+}
+
+/* ================================================
+   WORK GALLERY
+   ================================================ */
+.work {
+  padding: 90px 0 70px;
+  background: var(--paper);
+  overflow: hidden;
+}
+.work-hd {
+  padding: 0 7%;
+  display: flex; align-items: flex-end;
+  justify-content: space-between; gap: 40px;
+  margin-bottom: 48px;
+}
+.work-hd h2 {
+  font-size: clamp(42px, 5vw, 76px);
+  letter-spacing: -3px; line-height: 1.05;
+}
+.work-hd h2 em { color: #677942; }
+
+/* Draggable track */
+.gallery-track-wrap { position: relative; }
+.gallery-track {
+  display: flex; gap: 18px;
+  padding: 0 7% 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+}
+.gallery-track::-webkit-scrollbar { display: none; }
+.gallery-track.is-dragging { cursor: grabbing; }
+.gallery-track.is-dragging img { pointer-events: none; }
+
+/* Individual card */
+.g-card {
+  flex: 0 0 auto;
+  width: clamp(280px, 34vw, 480px);
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.g-img-wrap {
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  position: relative;
+}
+.g-card img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  transition: transform 0.65s var(--ease), filter 0.5s;
+  will-change: transform;
+}
+.g-card:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.05) saturate(1.1);
+}
+/* Shimmer sweep on hover */
+.g-img-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg,
+    transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0s;
+  pointer-events: none;
+}
+.g-card:hover .g-img-wrap::after {
+  transform: translateX(120%);
+  transition: transform 0.65s var(--ease);
+}
+/* Caption bar */
+.g-card figcaption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 36px 18px 16px;
+  background: linear-gradient(to top, rgba(38,56,29,0.72), transparent);
+  color: var(--paper);
+  font-size: 12px; letter-spacing: 1.2px;
+  transform: translateY(6px); opacity: 0;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.g-card:hover figcaption { opacity: 1; transform: none; }
+
+/* Drag hint */
+.gallery-drag-hint {
+  text-align: center;
+  font-size: 11px; letter-spacing: 1.8px; color: var(--muted);
+  margin-top: 22px; padding-bottom: 4px;
+  animation: fadeInUp 0.6s var(--ease) 1s both;
+}
+.dh-arrow {
+  display: inline-block;
+  animation: arrowPulse 2s ease-in-out infinite;
+}
+.dh-arrow:last-child { animation-delay: 0.3s; }
+@keyframes arrowPulse {
+  0%, 100% { transform: translateX(0); opacity: 0.5; }
+  50%       { transform: translateX(4px); opacity: 1; }
+}
+.dh-arrow:first-child {
+  animation-name: arrowPulseL;
+}
+@keyframes arrowPulseL {
+  0%, 100% { transform: translateX(0); opacity: 0.5; }
+  50%       { transform: translateX(-4px); opacity: 1; }
+}
+
+/* ================================================
+   ELEVATE LOGO
+   ================================================ */
+.elevate-logo {
+  display: block;
+  max-width: 180px;
+  margin-top: 10px;
+  filter: grayscale(1) opacity(0.55);
+  transition: filter 0.4s var(--ease);
+}
+.elevate-logo:hover {
+  filter: grayscale(0) opacity(0.9);
+}
+
+/* ================================================
    REDUCED MOTION
    ================================================ */
 @media (prefers-reduced-motion: reduce) {
